@@ -3,7 +3,7 @@
 Module to create topo and qinit data files for this example.
 """
 
-from pyclaw.geotools import topotools
+from clawpack.geoclaw import topotools
 from numpy import *
 
 def maketopo():
@@ -12,10 +12,10 @@ def maketopo():
     """
     nxpoints = 201
     nypoints = 201
-    xlower = -100.e0
-    xupper = 100.e0
-    yupper = 100.e0
-    ylower = -100.e0
+    xlower = -100.e3
+    xupper = 100.e3
+    yupper = 100.e3
+    ylower = -100.e3
     outfile= "bowl.topotype2"     
     topotools.topo2writer(outfile,topo,xlower,xupper,ylower,yupper,nxpoints,nypoints)
 
@@ -37,8 +37,8 @@ def topo(x,y):
     Parabolic bowl
     """
     # value of z at origin:  Try zmin = 80 for shoreline or 250 for no shore
-    zmin = 80.
-    z = 1.e-2*(x**2 + y**2) - zmin
+    zmin = 2e3
+    z = 2.5e-7*(x**2 + y**2) - zmin
     return z
 
 
@@ -46,9 +46,7 @@ def qinit(x,y):
     """
     Gaussian hump:
     """
-    from numpy import where
-    ze = -((x+0e0)**2 + (y+0e0)**2)/10.
-    z = where(ze>-10., 40.e0*exp(ze), 0.)
+    z = 0.1 * exp(-(x + y)**2 / 1e6)
     return z
 
 if __name__=='__main__':

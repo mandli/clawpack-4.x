@@ -6,6 +6,9 @@ that will be read in by the Fortran code.
     
 """ 
 
+import sys
+sys.path.remove('/Users/mandli/src/clawpack/clawpack/pyclaw/src')
+
 import os
 from pyclaw import data 
 
@@ -56,16 +59,16 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.ndim = ndim
     
     # Lower and upper edge of computational domain:
-    clawdata.xlower = -100.
-    clawdata.xupper = 100.
+    clawdata.xlower = -100.e3
+    clawdata.xupper = 100.e3
     
-    clawdata.ylower = -100.
-    clawdata.yupper = 100.
+    clawdata.ylower = -100.e3
+    clawdata.yupper = 100.e3
         
 
     # Number of grid cells:
-    clawdata.mx =  50
-    clawdata.my =  50
+    clawdata.mx =  100
+    clawdata.my =  100
         
 
     # ---------------
@@ -102,8 +105,8 @@ def setrun(claw_pkg='geoclaw'):
 
     if clawdata.outstyle==1:
         # Output nout frames at equally spaced times up to tfinal:
-        clawdata.nout = 24
-        clawdata.tfinal = 8.0
+        clawdata.nout = 7 * 4
+        clawdata.tfinal = 7.0 * 24.0 * 60.0**2
 
     elif clawdata.outstyle == 2:
         # Specify a list of output times.  
@@ -146,11 +149,11 @@ def setrun(claw_pkg='geoclaw'):
     
     # Desired Courant number if variable dt used, and max to allow without 
     # retaking step with a smaller dt:
-    clawdata.cfl_desired = 0.9
+    clawdata.cfl_desired = 0.75
     clawdata.cfl_max = 1.0
     
     # Maximum number of time steps to allow between output times:
-    clawdata.max_steps = 5000
+    clawdata.max_steps = 2**16
 
     
     
@@ -205,7 +208,7 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # max number of refinement levels:
-    mxnest = 4
+    mxnest = 1
 
     clawdata.mxnest = -mxnest   # negative ==> anisotropic refinement in x,y,t
 
@@ -270,9 +273,9 @@ def setgeo(rundata):
     geodata.wavetolerance = 1.e-2
     geodata.depthdeep = 1.e2
     geodata.maxleveldeep = 3
-    geodata.ifriction = 0
-    geodata.coeffmanning = 0.
-    geodata.frictiondepth = 20.
+    geodata.ifriction = 1
+    geodata.coeffmanning = 0.025
+    geodata.frictiondepth = 200
 
     # == settopo.data values ==
     geodata.topofiles = []
@@ -306,24 +309,26 @@ def setgeo(rundata):
     # == setgauges.data values ==
     geodata.gauges = []
     # for gauges append lines of the form  [gaugeno, x, y, t1, t2]
+    geodata.gauges.append([1,50359.3,72874.5,0.0,7.0 * 24.0 * 60.0**2])
+    geodata.gauges.append([2,0.0,0.0,0.0,7.0 * 24.0 * 60.0**2])
 
     from numpy import linspace, sqrt
 
     # gauges along x-axis:
-    gaugeno = 0
-    for r in linspace(86., 93., 9):
-        gaugeno = gaugeno+1
-        x = r + .001  # shift a bit away from cell corners
-        y = .001
-        geodata.gauges.append([gaugeno, x, y, 0., 1e10])
+    # gaugeno = 0
+    # for r in linspace(86., 93., 9):
+    #     gaugeno = gaugeno+1
+    #     x = r + .001  # shift a bit away from cell corners
+    #     y = .001
+    #     geodata.gauges.append([gaugeno, x, y, 0., 1e10])
 
-    # gauges along diagonal:
-    gaugeno = 100
-    for r in linspace(86., 93., 9):
-        gaugeno = gaugeno+1
-        x = (r + .001) / sqrt(2.)
-        y = (r + .001) / sqrt(2.)
-        geodata.gauges.append([gaugeno, x, y, 0., 1e10])
+    # # gauges along diagonal:
+    # gaugeno = 100
+    # for r in linspace(86., 93., 9):
+    #     gaugeno = gaugeno+1
+    #     x = (r + .001) / sqrt(2.)
+    #     y = (r + .001) / sqrt(2.)
+    #     geodata.gauges.append([gaugeno, x, y, 0., 1e10])
 
 
     # == setfixedgrids.data values ==

@@ -65,16 +65,16 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.ndim = ndim
 
     # Lower and upper edge of computational domain:
-    clawdata.xlower = -120.
-    clawdata.xupper = -60.
+    clawdata.xlower = -85.0
+    clawdata.xupper = -45.0
 
-    clawdata.ylower = -60.
-    clawdata.yupper = 0.
+    clawdata.ylower = 13.0
+    clawdata.yupper = 45.0
 
 
     # Number of grid cells:
-    clawdata.mx = 60 * 2
-    clawdata.my = 60 * 2
+    clawdata.mx = int(clawdata.xupper - clawdata.xlower) * 4
+    clawdata.my = int(clawdata.yupper - clawdata.ylower) * 4
 
 
     # ---------------
@@ -277,26 +277,29 @@ def setgeo(rundata):
 
     # == settsunami.data values ==
     geodata.sealevel = 0.
-    geodata.drytolerance = 1.e-3
-    geodata.wavetolerance = 1.e-1
+    geodata.drytolerance = 1.e-2
+    geodata.wavetolerance = 1.0
     geodata.depthdeep = 1.e2
     geodata.maxleveldeep = 3
     geodata.ifriction = 1
-    geodata.coeffmanning =.025
-    geodata.frictiondepth = 1e10
+    geodata.coeffmanning = 0.025
+    geodata.frictiondepth = 1e6
 
     # == settopo.data values ==
     geodata.topofiles = []
     # for topography, append lines of the form
     #   [topotype, minlevel, maxlevel, t1, t2, fname]
-    geodata.topofiles.append([2, 1, 3, 0., 1.e10, \
-                              'etopo10min120W60W60S0S.asc'])
+    geodata.topofiles.append([3, 1, 3, rundata.clawdata.t0, 
+                                       rundata.clawdata.tfinal, 
+                                       '/Users/mandli/src/clawpack/apps/storm_surge/atlantic/bathy/atlantic_2min_new.tt3'])
+    geodata.topofiles.append([3, 1, 5, rundata.clawdata.t0, 
+                                       rundata.clawdata.tfinal, 
+                                       '/Users/mandli/src/clawpack/apps/storm_surge/atlantic/bathy/newyork_3s.tt3'])
 
     # == setdtopo.data values ==
     geodata.dtopofiles = []
     # for moving topography, append lines of the form:  (<= 1 allowed for now!)
     #   [topotype, minlevel,maxlevel,fname]
-    geodata.dtopofiles.append([1,3,3,'usgs100227.tt1'])
 
     # == setqinit.data values ==
     geodata.iqinit = 0
@@ -309,13 +312,13 @@ def setgeo(rundata):
     geodata.regions = []
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
-    geodata.regions.append([3, 3, 0., 10000., -85,-72,-38,-25])
-    geodata.regions.append([3, 3, 8000., 26000., -90,-80,-30,-15])
+    # geodata.regions.append([3, 3, 0., 10000., -85,-72,-38,-25])
+    # geodata.regions.append([3, 3, 8000., 26000., -90,-80,-30,-15])
 
     # == setgauges.data values ==
     geodata.gauges = []
     # for gauges append lines of the form  [gaugeno, x, y, t1, t2]
-    geodata.gauges.append([32412, -86.392, -17.975, 0., 1.e10])
+    geodata.gauges.append([2,-63.0,43.5,0.0,1e10])
 
 
     # == setfixedgrids.data values ==
